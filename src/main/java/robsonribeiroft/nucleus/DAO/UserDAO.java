@@ -91,14 +91,9 @@ public class UserDAO extends SQLiteOpenHelper{
 
     public boolean cpfCadastrado(User user){
 
-        String sql = "SELECT * FROM " + TABELA + ";";
+        String sql = "SELECT * FROM " + TABELA + " WHERE cpf=" + user.getCpf() +";";
         Cursor cursor = getReadableDatabase().rawQuery(sql, null);
-        while (cursor.moveToNext()){
-            if (cursor.getCount()>0){
-                return true;
-            }
-        }
-        return false;
+        return cursor.getCount()>0 ? true : false;
     }
 
     public void deletar(User user) {
