@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,9 +22,15 @@ import java.io.IOException;
 import autentica.ValidaCPF;
 import autentica.ValidaEmail;
 import modelo.User;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import robsonribeiroft.nucleus.DAO.UserDAO;
 import robsonribeiroft.nucleus.helper.Helper;
 import robsonribeiroft.nucleus.singleton.Singleton;
+import userAPI.UserAPI;
 
 
 public class FormularioActivity extends AppCompatActivity {
@@ -32,6 +39,8 @@ public class FormularioActivity extends AppCompatActivity {
     private Helper helper;
     private User user = new User();
     private String caminhoFoto;
+    private Retrofit retrofit = new Retrofit.Builder().baseUrl(UserAPI.BASE_URL).addConverterFactory(GsonConverterFactory.create()).build();;
+    private UserAPI userAPI = retrofit.create(UserAPI.class);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,7 +97,7 @@ public class FormularioActivity extends AppCompatActivity {
                 user = helper.pegaUserDoFormulario();
                 UserDAO dao = new UserDAO(FormularioActivity.this);
 
-                if (user.getNome().equals("") || user.getTelefone().equals("") || user.getEmail().equals("") || user.getCpf().equals("")){
+                if (user.getName().equals("") || user.getPhone().equals("") || user.getEmail().equals("") || user.getCpf().equals("")){
                     Toast.makeText(FormularioActivity.this, "Preencher campos obrigatórios", Toast.LENGTH_SHORT).show();
                 }
                 else if (!ValidaEmail.isEmailValid(user.getEmail())){
@@ -101,13 +110,52 @@ public class FormularioActivity extends AppCompatActivity {
                     user = helper.pegaUserDoFormulario();
 
                     if (Singleton.getInstance().currentUser != null){
+
+                        Call<User> requestUpdateUser = userAPI.updateUser(Singleton.getInstance().currentUser.get_id(), user);
+                        requestUpdateUser.enqueue(new Callback<User>() {
+                            @Override
+                            public void onResponse(Call<User> call, Response<User> response) {
+                                if (!response.isSuccessful()){
+                                    Log.i("Check", "Update - erro no servido - " + response.code());
+                                } else {
+                                    Log.i("Check", "Update - Deu certo - " + user.getName() + " - " +Singleton.getInstance().currentUser.get_id());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<User> call, Throwable t) {
+                                Log.i("Check", "Update - Sem internet - " + t.getMessage());
+                            }
+                        });
+
                         dao.atualizar(user);
                         dao.close();
                         onBackPressed();
+
+
                     } else {
                         if(dao.cpfCadastrado(user)){
                             Toast.makeText(FormularioActivity.this, "CPF já cadastrado!", Toast.LENGTH_SHORT).show();
-                        }else {
+                        } else {
+                            Call<User> requestPostUSer = userAPI.postUser(user);
+
+                            requestPostUSer.enqueue(new Callback<User>() {
+                                @Override
+                                public void onResponse(Call<User> call, Response<User> response) {
+                                    if (response.isSuccessful()){
+                                        Log.i("Check", "Single user - erro no banco " + response.code());
+                                    } else {
+                                        Log.i("Check", "Single user - post efetuado");
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<User> call, Throwable t) {
+                                    Log.i("Check", "Single user - sem internet " + t.getMessage());
+                                }
+                            });
+
+
                             dao.insere(user);
                             dao.close();
                             onBackPressed();
@@ -130,7 +178,11 @@ public class FormularioActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GALLERY_IMAGE_REQUEST){
+            Log.i("IMG", "Imagen a ser tratada");
+            /*
             try{
+
+
                 Uri uri = data.getData();
 
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
@@ -139,6 +191,7 @@ public class FormularioActivity extends AppCompatActivity {
 
 
                 helper.carregaImagem(caminhoFoto);
+
 
             }
             catch (NullPointerException e){
@@ -150,7 +203,7 @@ public class FormularioActivity extends AppCompatActivity {
             }
             catch (IOException e) {
                 caminhoFoto = null;
-            }
+            }*/
         }
     }
 

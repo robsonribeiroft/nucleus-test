@@ -3,6 +3,7 @@ package robsonribeiroft.nucleus.adapter;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import modelo.User;
-import robsonribeiroft.nucleus.DAO.UserDAO;
 import robsonribeiroft.nucleus.R;
 
 public class UserAdapter extends BaseAdapter {
@@ -53,13 +53,16 @@ public class UserAdapter extends BaseAdapter {
         TextView email = (TextView) linha.findViewById(R.id.ILemail);
         ImageView foto = (ImageView) linha.findViewById(R.id.ILfoto);
 
-        nome.setText(user.getNome());
+        nome.setText(user.getName());
         email.setText(user.getEmail());
 
-        if (user.getCaminhoFoto() != null){
-            Bitmap imagem = BitmapFactory.decodeFile(user.getCaminhoFoto());
+        if (user.getPhoto() != null){
+            Log.i("IMG","Imagem a ser tradada");
+            /*
+            Bitmap imagem = BitmapFactory.decodeFile(user.getPhoto());
             Bitmap imagemReduzida = Bitmap.createScaledBitmap(imagem, 100, 100, true);
             foto.setImageBitmap(imagemReduzida);
+            */
         } else {
             foto.setImageResource(R.mipmap.ic_launcher);
         }

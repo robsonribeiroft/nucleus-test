@@ -1,17 +1,13 @@
 package robsonribeiroft.nucleus;
 
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.ContextMenu;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import robsonribeiroft.nucleus.helper.Helper;
 import robsonribeiroft.nucleus.singleton.Singleton;
@@ -46,14 +42,14 @@ public class UsuarioActivity extends AppCompatActivity {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         if (v == telefone) {
             Intent vaiParaTelaDeDiscagem = new Intent(Intent.ACTION_DIAL);
-            Uri userTelefone = Uri.parse("tel:" + Singleton.getInstance().currentUser.getTelefone());
+            Uri userTelefone = Uri.parse("tel:" + Singleton.getInstance().currentUser.getPhone());
             vaiParaTelaDeDiscagem.setData(userTelefone);
             startActivity(vaiParaTelaDeDiscagem);
         }
         else if (v == website){
-            if (Singleton.getInstance().currentUser.getWebsite() != null && Singleton.getInstance().currentUser.getWebsite() != ""){
+            if (Singleton.getInstance().currentUser.getUrl() != null && Singleton.getInstance().currentUser.getUrl() != ""){
                 Intent vaiParaWebsite = new Intent(Intent.ACTION_VIEW);
-                Uri userWebsite = Uri.parse("http://" + Singleton.getInstance().currentUser.getWebsite());
+                Uri userWebsite = Uri.parse("http://" + Singleton.getInstance().currentUser.getUrl());
                 vaiParaWebsite.setData(userWebsite);
                 startActivity(vaiParaWebsite);
             }

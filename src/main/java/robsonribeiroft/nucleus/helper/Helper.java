@@ -2,6 +2,7 @@ package robsonribeiroft.nucleus.helper;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,14 +38,14 @@ public class Helper {
 
     public Helper(FormularioActivity activity){
         user = new User();
-        campoNome = (EditText) activity.findViewById(R.id.nome);
+        campoNome = (EditText) activity.findViewById(R.id.name);
         campoCpf = (EditText) activity.findViewById(R.id.cpf);
-        campoTelefone = (EditText) activity.findViewById(R.id.telefone);
+        campoTelefone = (EditText) activity.findViewById(R.id.phone);
         campoEmail = (EditText) activity.findViewById(R.id.email);
-        campoCompanhia = (EditText) activity.findViewById(R.id.companhia);
-        campoAniversario = (EditText) activity.findViewById(R.id.aniversario);
-        campoLocalizacao = (EditText) activity.findViewById(R.id.localizacao);
-        campoWebsite = (EditText) activity.findViewById(R.id.website);
+        campoCompanhia = (EditText) activity.findViewById(R.id.company);
+        campoAniversario = (EditText) activity.findViewById(R.id.birthdate);
+        campoLocalizacao = (EditText) activity.findViewById(R.id.location);
+        campoWebsite = (EditText) activity.findViewById(R.id.url);
         campoFoto = (ImageView) activity.findViewById(R.id.mostrafoto);
     }
 
@@ -59,42 +60,42 @@ public class Helper {
         TVlocalizacao = (TextView) activity.findViewById(R.id.TVlocalizacao);
         TVwebsite = (TextView) activity.findViewById(R.id.TVwebsite);
 
-        TVnome.setText(user.getNome());
+        TVnome.setText(user.getName());
         TVcpf.setText(user.getCpf());
-        TVtelefone.setText(user.getTelefone());
+        TVtelefone.setText(user.getPhone());
         TVemail.setText(user.getEmail());
-        TVcompanhia.setText(user.getCompanhia());
-        TVaniversario.setText(user.getAniversario());
-        TVlocalizacao.setText(user.getLocalizacao());
-        TVwebsite.setText(user.getWebsite());
+        TVcompanhia.setText(user.getCompany());
+        TVaniversario.setText(user.getBirthdate());
+        TVlocalizacao.setText(user.getLocation());
+        TVwebsite.setText(user.getUrl());
     }
 
 
 
     public User pegaUserDoFormulario(){
-        user.setNome(campoNome.getText().toString());
-        user.setCpf(campoCpf.getText().toString());
-        user.setTelefone(campoTelefone.getText().toString());
+        user.setName(campoNome.getText().toString());
+        user.setCpf(campoCpf.getText().toString().replaceAll("[.-]", ""));
+        user.setPhone(campoTelefone.getText().toString());
         user.setEmail(campoEmail.getText().toString());
-        user.setCompanhia(campoCompanhia.getText().toString());
-        user.setAniversario(campoAniversario.getText().toString());
-        user.setLocalizacao(campoLocalizacao.getText().toString());
-        user.setWebsite(campoWebsite.getText().toString());
+        user.setCompany(campoCompanhia.getText().toString());
+        user.setBirthdate(campoAniversario.getText().toString());
+        user.setLocation(campoLocalizacao.getText().toString());
+        user.setUrl(campoWebsite.getText().toString());
         return user;
     }
 
     public void preencherFormulario(User userParaAlteracao) {
 
-        campoNome.setText(userParaAlteracao.getNome());
+        campoNome.setText(userParaAlteracao.getName());
         campoCpf.setText(userParaAlteracao.getCpf());
-        campoTelefone.setText(userParaAlteracao.getTelefone());
+        campoTelefone.setText(userParaAlteracao.getPhone());
         campoEmail.setText(userParaAlteracao.getEmail());
-        campoCompanhia.setText(userParaAlteracao.getCompanhia());
-        campoAniversario.setText(userParaAlteracao.getAniversario());
-        campoLocalizacao.setText(userParaAlteracao.getLocalizacao());
-        campoWebsite.setText(userParaAlteracao.getWebsite());
-        if (userParaAlteracao.getCaminhoFoto() != null){
-            carregaImagem(userParaAlteracao.getCaminhoFoto());
+        campoCompanhia.setText(userParaAlteracao.getCompany());
+        campoAniversario.setText(userParaAlteracao.getBirthdate());
+        campoLocalizacao.setText(userParaAlteracao.getLocation());
+        campoWebsite.setText(userParaAlteracao.getUrl());
+        if (userParaAlteracao.getPhoto() != null){
+            carregaImagem(userParaAlteracao.getPhoto());
         }
     }
 
@@ -115,9 +116,14 @@ public class Helper {
     }
 
     public void carregaImagem(String caminhoFoto) {
-        user.setCaminhoFoto(caminhoFoto);
+        Log.i("IMG", "Imagem a ser tratada");
+        /*
+        user.setPhoto(caminhoFoto);
         Bitmap imagem = BitmapFactory.decodeFile(caminhoFoto);
         Bitmap imagemReduzida = Bitmap.createScaledBitmap(imagem, 100, 100, true);
         campoFoto.setImageBitmap(imagemReduzida);
+        */
     }
+
+
 }
